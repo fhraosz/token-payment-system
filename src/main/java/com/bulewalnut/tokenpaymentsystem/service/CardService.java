@@ -29,7 +29,7 @@ public class CardService {
     public String sendPostCardDto(CardDto cardDto) {
         try {
             CardDto encryptCardDto = encryptCardDto(cardDto);
-            return restClient.sendPostForEntity(tokenizationServiceUrl + REGISTER, encryptCardDto);
+            return restClient.postForStringResponse(tokenizationServiceUrl + REGISTER, encryptCardDto);
 
         } catch (EncryptionException e) {
             log.error("Encryption failed due to an unexpected error", e);
@@ -45,7 +45,8 @@ public class CardService {
 
     public List<CardDto> findCardByUserCi(String userCi) {
         try {
-            return restClient.getCardListFromEndpoint(tokenizationServiceUrl + SEARCH, userCi);
+            String url = String.format("%s?userCi=%s", tokenizationServiceUrl + SEARCH, userCi);
+            return restClient.getListFromGetResponse(url, CardDto.class);
 
         } catch (RestClientException e) {
             log.error("Failed to communicate with external service", e);

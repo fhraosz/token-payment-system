@@ -1,6 +1,5 @@
 package com.bulewalnut.tokenpaymentsystem.util;
 
-import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.exception.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class RestClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public String sendPostForEntity(String endpoint, Object requestBody) {
+    public String postForStringResponse(String endpoint, Object requestBody) {
         ResponseEntity<String> response = restTemplate.postForEntity(endpoint, requestBody, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -32,13 +30,12 @@ public class RestClient {
         }
     }
 
-    public List<CardDto> getCardListFromEndpoint(String endpoint, String userCi) {
-        String url = String.format("%s?userCi=%s", endpoint, userCi);
+    public <T> List<T> getListFromGetResponse(String url, Class<T> dtoClass) {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
-                return objectMapper.readValue(response.getBody(), new TypeReference<List<CardDto>>() {});
+                return objectMapper.readValue(response.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, dtoClass));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
