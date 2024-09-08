@@ -10,7 +10,7 @@ import java.util.Base64;
 import javax.crypto.spec.SecretKeySpec;
 
 @Component
-public class EncryptionUtils {
+public class EncryptionUtil {
 
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final String TRANSFORMATION = "AES";
@@ -21,7 +21,7 @@ public class EncryptionUtils {
 
     public String encrypt(String data) throws Exception {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
-        SecretKeySpec keySpec = new SecretKeySpec(adjustKeyLength(secretKey), TRANSFORMATION);
+        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), TRANSFORMATION);
         byte[] iv = generateIV();
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
@@ -44,26 +44,11 @@ public class EncryptionUtils {
         System.arraycopy(encryptedDataWithIv, iv.length, encryptedBytes, 0, encryptedBytes.length);
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
-        SecretKeySpec keySpec = new SecretKeySpec(adjustKeyLength(secretKey), TRANSFORMATION);
+        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), TRANSFORMATION);
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
         byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
         return new String(decryptedBytes);
-    }
-
-    private byte[] adjustKeyLength(String key) {
-        byte[] keyBytes = key.getBytes();
-        if (keyBytes.length < KEY_SIZE) {
-            byte[] paddedKey = new byte[KEY_SIZE];
-            System.arraycopy(keyBytes, 0, paddedKey, 0, keyBytes.length);
-            return paddedKey;
-        } else if (keyBytes.length > KEY_SIZE) {
-            byte[] truncatedKey = new byte[KEY_SIZE];
-            System.arraycopy(keyBytes, 0, truncatedKey, 0, KEY_SIZE);
-            return truncatedKey;
-        } else {
-            return keyBytes;
-        }
     }
 
     private byte[] generateIV() {

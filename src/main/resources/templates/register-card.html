@@ -63,7 +63,7 @@
             // 만료일 유효성 검사
             const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
             if (!expiryRegex.test(cardExpiry)) {
-                alert('카드 만료일은 MM/YY 형식으로 입력해야 합니다.');
+                alert('카드 만료일을 확인해주세요.');
                 return false;
             }
 
@@ -95,6 +95,13 @@
     </div>
     <div>
         <button type="submit">Register Card</button>
+    </div>
+
+    <div th:if="${error != null}">
+        <p style="color: red;" th:text="${error}"></p>
+    </div>
+    <div th:if="${message != null}">
+        <p style="color: green;" th:text="${message}"></p>
     </div>
 </form>
 </body>

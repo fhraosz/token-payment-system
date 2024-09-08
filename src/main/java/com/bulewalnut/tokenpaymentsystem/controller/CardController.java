@@ -5,7 +5,6 @@ import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +24,14 @@ public class CardController {
 
     @PostMapping("/register")
     public String registerCard(CardDto cardDto, Model model) {
-        if (ObjectUtils.isEmpty(cardDto)) {
-            model.addAttribute("error", "CardDto is null");
+        String refId = cardApplication.encryptAndSendCardDto(cardDto);
+
+        if (refId == null) {
+            model.addAttribute("error", "카드 등록 과정에서 문제가 발생했습니다.");
             return "register-card";
         }
-        String refId = cardApplication.encryptAndSendCardDto(cardDto);
-        model.addAttribute("message", "Card registered with REF_ID: " + refId);
+
+        model.addAttribute("message", "카드가 성공적으로 등록되었습니다. REF_ID: " + refId);
         return "register-card";
     }
 }
