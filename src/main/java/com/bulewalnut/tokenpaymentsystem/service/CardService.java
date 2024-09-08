@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,11 +21,12 @@ public class CardService {
     private final RestClient restClient;
 
     public static final String REGISTER = "/register";
+    public static final String SEARCH = "/search";
 
     @Value("${tokenization.service.url}")
     private String tokenizationServiceUrl;
 
-    public String sendCardDto(CardDto cardDto) {
+    public String sendPostCardDto(CardDto cardDto) {
         try {
             CardDto encryptCardDto = encryptCardDto(cardDto);
             return restClient.sendPostForEntity(tokenizationServiceUrl + REGISTER, encryptCardDto);
@@ -40,13 +43,26 @@ public class CardService {
         }
     }
 
+    public List<CardDto> findCardByUserCi(String userCi) {
+        try {
+            return restClient.getCardListFromEndpoint(tokenizationServiceUrl + SEARCH, userCi);
+
+        } catch (RestClientException e) {
+            log.error("Failed to communicate with external service", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Card registration failed due to an unexpected error", e);
+            return null;
+        }
+    }
+
     private CardDto encryptCardDto(CardDto cardDto) {
         try {
             String encryptedCardNumber = encryptionUtil.encrypt(cardDto.getCardNumber());
             String encryptedCardExpiry = encryptionUtil.encrypt(cardDto.getCardExpiry());
             String encryptedCardCvc = encryptionUtil.encrypt(cardDto.getCardCvc());
 
-            return CardDto.of(encryptedCardNumber, encryptedCardExpiry, encryptedCardCvc);
+            return CardDto.of(encryptedCardNumber, encryptedCardExpiry, encryptedCardCvc, cardDto.getCardNickName());
         } catch (Exception e) {
             log.error("Encryption failed.", e);
             throw new EncryptionException("Encryption failed", e);

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "card")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,6 +35,9 @@ public class CardEntity {
     @Column(nullable = false)
     private String userCi;
 
+    @Column(nullable = false)
+    private String cardNickName;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -51,6 +53,7 @@ public class CardEntity {
                 .cardCvc(cardDto.getCardCvc())
                 .refId(refID)
                 .userCi(userCi)
+                .cardNickName(cardDto.getCardNickName())
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
