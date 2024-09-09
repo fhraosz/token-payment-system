@@ -2,13 +2,11 @@ package com.bulewalnut.tokenpaymentsystem.controller;
 
 import com.bulewalnut.tokenpaymentsystem.application.CardApplication;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class CardController {
     // 카드등록
     @PostMapping("/register")
     public String registerCard(CardDto cardDto, Model model) {
-        String refId = cardApplication.encryptAndSendCardDto(cardDto);
+        String refId = cardApplication.encryptAndRegisterCard(cardDto);
 
         if (refId == null) {
             model.addAttribute("error", "카드 등록 과정에서 문제가 발생했습니다.");
@@ -41,24 +39,24 @@ public class CardController {
     }
 
     // 카드결제페이지
-    @GetMapping("/view")
+    @GetMapping("/payment")
     public String getCardList(Model model) {
         List<CardDto> cardList = cardApplication.findCardByUserCi();
         model.addAttribute("cardList", cardList);
-        return "card-list"; // Thymeleaf 템플릿 파일 이름
+        return "payment-card";
     }
 
     // 카드결제하기
     @PostMapping("/payment/process")
-    public String processCard(@RequestParam("cardRefId") String cardRefId, Model model) {
-        String result = cardApplication.paymentProcess(cardRefId);
+    public String processCard(@ModelAttribute PaymentDto paymentDto, Model model) {
+        String result = cardApplication.paymentProcessByPaymentDto(paymentDto);
 
         if (result == null) {
             model.addAttribute("error", "결제 처리에 실패하였습니다. 다시 시도해 주세요.");
-            return "card-list";
+            return "payment-card";
         }
 
         model.addAttribute("message", "결제가 성공적으로 처리되었습니다.");
-        return "card-list";
+        return "payment-card";
     }
 }

@@ -1,6 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.application;
 
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,16 +14,17 @@ public class CardApplication {
 
     private final CardService cardService;
 
-    public String encryptAndSendCardDto(CardDto cardDto) {
-        return cardService.sendPostCardDto(cardDto);
+    public String encryptAndRegisterCard(CardDto cardDto) {
+        return cardService.encryptAndRegisterCard(cardDto);
     }
 
     public List<CardDto> findCardByUserCi() {
         return cardService.findCardByUserCi("test123");
     }
 
-    public String paymentProcess(String cardRefId) {
-        return null;
+    public String paymentProcessByPaymentDto(PaymentDto paymentDto) {
+        String oneTimeToken = cardService.getTokenByRefId(paymentDto.getRefId());
+        return cardService.paymentProcessByPaymentDto(PaymentDto.of(paymentDto, oneTimeToken));
     }
 }
 

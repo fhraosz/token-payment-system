@@ -30,6 +30,16 @@ public class RestClient {
         }
     }
 
+    public String getForStringResponse(String url) {
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            throw new RestClientException("Failed to communicate with external service, status code: " + response.getStatusCode());
+        }
+    }
+
     public <T> List<T> getListFromGetResponse(String url, Class<T> dtoClass) {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 

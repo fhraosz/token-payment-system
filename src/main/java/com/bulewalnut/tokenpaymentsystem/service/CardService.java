@@ -1,6 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.service;
 
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.exception.EncryptionException;
 import com.bulewalnut.tokenpaymentsystem.exception.RestClientException;
 import com.bulewalnut.tokenpaymentsystem.util.EncryptionUtil;
@@ -22,11 +23,16 @@ public class CardService {
 
     public static final String REGISTER = "/register";
     public static final String SEARCH = "/search";
+    public static final String TOKEN = "/token";
+    public static final String PROCESS = "/process";
 
     @Value("${tokenization.service.url}")
     private String tokenizationServiceUrl;
 
-    public String sendPostCardDto(CardDto cardDto) {
+    @Value("${payment.service.url}")
+    private String paymentServiceUrl;
+
+    public String encryptAndRegisterCard(CardDto cardDto) {
         try {
             CardDto encryptCardDto = encryptCardDto(cardDto);
             return restClient.postForStringResponse(tokenizationServiceUrl + REGISTER, encryptCardDto);
@@ -47,6 +53,32 @@ public class CardService {
         try {
             String url = String.format("%s?userCi=%s", tokenizationServiceUrl + SEARCH, userCi);
             return restClient.getListFromGetResponse(url, CardDto.class);
+
+        } catch (RestClientException e) {
+            log.error("Failed to communicate with external service", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Card registration failed due to an unexpected error", e);
+            return null;
+        }
+    }
+
+    public String getTokenByRefId(String refId) {
+        try {
+            String url = String.format("%s?refId=%s", tokenizationServiceUrl + TOKEN, refId);
+            return restClient.getForStringResponse(url);
+        } catch (RestClientException e) {
+            log.error("Failed to communicate with external service", e);
+            return null;
+        } catch (Exception e) {
+            log.error("Card registration failed due to an unexpected error", e);
+            return null;
+        }
+    }
+
+    public String paymentProcessByPaymentDto(PaymentDto paymentDto) {
+        try {
+            return restClient.postForStringResponse(paymentServiceUrl + PROCESS, paymentDto);
 
         } catch (RestClientException e) {
             log.error("Failed to communicate with external service", e);

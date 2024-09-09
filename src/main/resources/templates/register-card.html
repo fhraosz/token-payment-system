@@ -43,7 +43,7 @@
             let input = event.target;
             let value = input.value;
 
-            value = value.replace(/[^a-zA-Z0-9]/g, '');
+            value = value.replace(/[^a-zA-Z0-9가-힣]/g, '');
 
             if (value.length > 10) {
                 value = value.substring(0, 10);
@@ -118,7 +118,7 @@
 </form>
 
 <div>
-    <a href="#" th:href="@{/cards/view}" class="button">결제 페이지로 이동</a>
+    <a href="#" th:href="@{/cards/payment}" class="button">결제 페이지로 이동</a>
 </div>
 
 </body>

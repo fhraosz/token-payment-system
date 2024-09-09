@@ -1,6 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.application;
 
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.entity.CardEntity;
 import com.bulewalnut.tokenpaymentsystem.service.TokenService;
 import com.bulewalnut.tokenpaymentsystem.util.RefIdUtil;
@@ -35,6 +36,10 @@ public class TokenApplication {
                 (cardEntity -> cardDtos.add(CardDto.of(cardEntity.getRefId(), cardEntity.getCardNickName())));
 
         return cardDtos;
+    }
+
+    public String getTokenByRefId(String refId) {
+        return tokenService.makeTokenAndSave(refId);
     }
 }
 
