@@ -1,14 +1,16 @@
-package com.bulewalnut.tokenpaymentsystem.service;
+package com.bulewalnut.tokenpaymentsystem.api;
 
+import com.bulewalnut.tokenpaymentsystem.dto.ApiResponse;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import com.bulewalnut.tokenpaymentsystem.exception.EncryptionException;
-import com.bulewalnut.tokenpaymentsystem.exception.RestClientException;
 import com.bulewalnut.tokenpaymentsystem.util.EncryptionUtil;
 import com.bulewalnut.tokenpaymentsystem.util.RestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CardService {
+public class CardApi {
 
     private final EncryptionUtil encryptionUtil;
     private final RestClient restClient;
@@ -24,7 +26,7 @@ public class CardService {
     public static final String REGISTER = "/register";
     public static final String SEARCH = "/search";
     public static final String TOKEN = "/token";
-    public static final String PROCESS = "/process";
+    public static final String APPROVE = "/approve";
 
     @Value("${tokenization.service.url}")
     private String tokenizationServiceUrl;
@@ -33,60 +35,25 @@ public class CardService {
     private String paymentServiceUrl;
 
     public String encryptAndRegisterCard(CardDto cardDto) {
-        try {
             CardDto encryptCardDto = encryptCardDto(cardDto);
-            return restClient.postForStringResponse(tokenizationServiceUrl + REGISTER, encryptCardDto);
-
-        } catch (EncryptionException e) {
-            log.error("Encryption failed due to an unexpected error", e);
-            return null;
-        } catch (RestClientException e) {
-            log.error("Failed to communicate with external service", e);
-            return null;
-        } catch (Exception e) {
-            log.error("Card registration failed due to an unexpected error", e);
-            return null;
-        }
+            return restClient.postResponse(tokenizationServiceUrl + REGISTER, encryptCardDto);
     }
 
     public List<CardDto> findCardByUserCi(String userCi) {
-        try {
             String url = String.format("%s?userCi=%s", tokenizationServiceUrl + SEARCH, userCi);
-            return restClient.getListFromGetResponse(url, CardDto.class);
-
-        } catch (RestClientException e) {
-            log.error("Failed to communicate with external service", e);
-            return null;
-        } catch (Exception e) {
-            log.error("Card registration failed due to an unexpected error", e);
-            return null;
-        }
+            return restClient.getListResponse(url, CardDto.class);
     }
 
     public String getTokenByRefId(String refId) {
-        try {
             String url = String.format("%s?refId=%s", tokenizationServiceUrl + TOKEN, refId);
-            return restClient.getForStringResponse(url);
-        } catch (RestClientException e) {
-            log.error("Failed to communicate with external service", e);
-            return null;
-        } catch (Exception e) {
-            log.error("Card registration failed due to an unexpected error", e);
-            return null;
-        }
+            return restClient.getResponse(url);
     }
 
-    public String paymentProcessByPaymentDto(PaymentDto paymentDto) {
-        try {
-            return restClient.postForStringResponse(paymentServiceUrl + PROCESS, paymentDto);
+    public PaymentRecordDto paymentProcessByToken(PaymentDto requestDto) {
+        ParameterizedTypeReference<ApiResponse<PaymentRecordDto>> responseType =
+                new ParameterizedTypeReference<>() {};
 
-        } catch (RestClientException e) {
-            log.error("Failed to communicate with external service", e);
-            return null;
-        } catch (Exception e) {
-            log.error("Card registration failed due to an unexpected error", e);
-            return null;
-        }
+        return restClient.postResponse(paymentServiceUrl + APPROVE, requestDto, responseType);
     }
 
     private CardDto encryptCardDto(CardDto cardDto) {

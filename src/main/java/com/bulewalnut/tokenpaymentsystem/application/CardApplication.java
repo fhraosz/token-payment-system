@@ -2,7 +2,8 @@ package com.bulewalnut.tokenpaymentsystem.application;
 
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
-import com.bulewalnut.tokenpaymentsystem.service.CardService;
+import com.bulewalnut.tokenpaymentsystem.api.CardApi;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +13,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CardApplication {
 
-    private final CardService cardService;
+    private final CardApi cardApi;
 
     public String encryptAndRegisterCard(CardDto cardDto) {
-        return cardService.encryptAndRegisterCard(cardDto);
+        return cardApi.encryptAndRegisterCard(cardDto);
     }
 
     public List<CardDto> findCardByUserCi() {
-        return cardService.findCardByUserCi("test123");
+        return cardApi.findCardByUserCi("test123");
     }
 
-    public String paymentProcessByPaymentDto(PaymentDto paymentDto) {
-        String oneTimeToken = cardService.getTokenByRefId(paymentDto.getRefId());
-        return cardService.paymentProcessByPaymentDto(PaymentDto.of(paymentDto, oneTimeToken));
+    public PaymentRecordDto paymentProcessByToken(PaymentDto paymentDto) {
+        String token = cardApi.getTokenByRefId(paymentDto.getRefId()); // 1회용 토큰 발급
+        PaymentDto requestDto = PaymentDto.of(paymentDto, token);
+
+        return cardApi.paymentProcessByToken(requestDto);
     }
 }
 

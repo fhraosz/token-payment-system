@@ -1,5 +1,6 @@
 package com.bulewalnut.tokenpaymentsystem.entity;
 
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,32 +9,32 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
-@Table(name = "token")
+@Table(name = "payment_recode")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenEntity {
+public class PaymentRecordEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String token;
+    @Column(name = "transaction_id", nullable = false)
+    private String transactionId;
 
-    @Column(name = "ref_id", nullable = false)
-    private String refId;
+    @Column(nullable = false)
+    private String refId; // 카드 참조값
 
-    @Column(name = "expires_at", nullable = false)
-    private LocalDateTime expiresAt;
+    @Column(nullable = false)
+    private BigDecimal amount; // 결제 금액
 
-    @Column(name = "is_use", nullable = false)
-    private Boolean isUse;
+    @Column(nullable = false)
+    private String status; // 결제 상태 (예: APPROVED, FAILED)
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -43,14 +44,14 @@ public class TokenEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public static TokenEntity of(String refId) {
+    public static PaymentRecordEntity of(PaymentDto paymentDto, String transactionId, String status) {
         LocalDateTime now = LocalDateTime.now();
 
-        return TokenEntity.builder()
-                .token(UUID.randomUUID().toString())
-                .refId(refId)
-                .expiresAt(now.plusMinutes(10))
-                .isUse(false)
+        return PaymentRecordEntity.builder()
+                .transactionId(transactionId)
+                .refId(paymentDto.getRefId())
+                .amount(paymentDto.getAmount())
+                .status(status)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,10 +35,22 @@ public class TokenService {
         return cardEntityList;
     }
 
+    @Transactional
     public String makeTokenAndSave(String refId) {
         TokenEntity tokenEntity = TokenEntity.of(refId);
         tokenRepository.save(tokenEntity);
 
         return tokenEntity.getToken();
+    }
+
+    @Transactional
+    public TokenEntity findTokenEntityByToken(String token) {
+        return tokenRepository.findByToken(token);
+    }
+
+    @Transactional
+    public Boolean changeTokenState(String token) {
+        tokenRepository.updateTokenStatusAndTimestamp(token, true, LocalDateTime.now());
+        return true;
     }
 }

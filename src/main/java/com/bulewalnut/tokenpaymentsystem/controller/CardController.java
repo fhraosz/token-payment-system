@@ -3,10 +3,12 @@ package com.bulewalnut.tokenpaymentsystem.controller;
 import com.bulewalnut.tokenpaymentsystem.application.CardApplication;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
+import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -48,15 +50,17 @@ public class CardController {
 
     // 카드결제하기
     @PostMapping("/payment/process")
-    public String processCard(@ModelAttribute PaymentDto paymentDto, Model model) {
-        String result = cardApplication.paymentProcessByPaymentDto(paymentDto);
+    public ModelAndView processCard(@ModelAttribute PaymentDto paymentDto, Model model) {
+        PaymentRecordDto result = cardApplication.paymentProcessByToken(paymentDto);
 
         if (result == null) {
+            ModelAndView modelAndView = new ModelAndView("payment-card");
             model.addAttribute("error", "결제 처리에 실패하였습니다. 다시 시도해 주세요.");
-            return "payment-card";
+            return modelAndView;
         }
 
-        model.addAttribute("message", "결제가 성공적으로 처리되었습니다.");
-        return "payment-card";
+        ModelAndView modelAndView = new ModelAndView("payment-complete");
+        modelAndView.addObject("paymentResponse", result);
+        return modelAndView;
     }
 }
