@@ -17,12 +17,16 @@ public class PaymentApplication {
     private final PaymentService paymentService;
 
     public PaymentRecordDto validateTokenAndProcessPayment(PaymentDto requestDto) {
-        TokenRequestDto tokenRequestDto = TokenRequestDto.of(requestDto.getToken());
+        TokenRequestDto tokenRequestDto = TokenRequestDto.setTokenRequestDto(requestDto.getToken());
 
        if (BooleanUtils.isNotTrue(paymentApi.validateToken(tokenRequestDto)))  {  // 토큰 유효성 검사
-           return null;
+           return new PaymentRecordDto();
        }
         return paymentService.processPayment(requestDto);
+    }
+
+    public PaymentRecordDto findPaymentRecordByTransactionId(String transactionId) {
+        return paymentService.findPaymentRecordByTransactionId(transactionId);
     }
 }
 

@@ -4,16 +4,15 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class TokenRequestDto {
 
     private String token;
 
-    public static TokenRequestDto of(String token) {
-        return TokenRequestDto.builder()
-                .token(token)
-                .build();
+    public static TokenRequestDto setTokenRequestDto(String token) {
+        TokenRequestDto tokenRequestDto = new TokenRequestDto();
+        tokenRequestDto.setToken(token);
+        return tokenRequestDto;
     }
+
 }

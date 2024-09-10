@@ -35,7 +35,7 @@ public class TokenService {
         return cardEntityList;
     }
 
-    @Transactional
+    @Transactional()
     public String makeTokenAndSave(String refId) {
         TokenEntity tokenEntity = TokenEntity.of(refId);
         tokenRepository.save(tokenEntity);
@@ -50,7 +50,7 @@ public class TokenService {
 
     @Transactional
     public Boolean changeTokenState(String token) {
-        tokenRepository.updateTokenStatusAndTimestamp(token, true, LocalDateTime.now());
+        tokenRepository.updateTokenStatusAndTimestamp(token, true);
         return true;
     }
 }

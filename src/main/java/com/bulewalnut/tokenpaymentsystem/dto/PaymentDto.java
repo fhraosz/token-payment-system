@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentDto {
@@ -15,11 +14,14 @@ public class PaymentDto {
     private BigDecimal amount; // 결제 금액
     private String token; // 1회용 토큰
 
-    public static PaymentDto of(PaymentDto paymentDto, String token) {
-        return PaymentDto.builder()
-                .refId(paymentDto.getRefId())
-                .amount(paymentDto.getAmount())
-                .token(token)
-                .build();
+    public static PaymentDto setPaymentDto(PaymentDto paymentDto, String token) {
+        PaymentDto updatedPaymentDto = new PaymentDto();
+
+        updatedPaymentDto.setRefId(paymentDto.getRefId());
+        updatedPaymentDto.setAmount(paymentDto.getAmount());
+        updatedPaymentDto.setToken(token);
+
+        return updatedPaymentDto;
     }
+
 }

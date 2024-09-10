@@ -54,8 +54,8 @@ public class CardEntity {
                 .refId(refID)
                 .userCi(userCi)
                 .cardNickName(cardDto.getCardNickName())
-                .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .createdDate(LocalDateTime.now()) // dto에 넣어서 전달하는 방식으로 변경
+                .lastModifiedDate(LocalDateTime.now()) // dto에 넣어서 전달하는 방식으로 변경
                 .build();
     }
 }

@@ -16,10 +16,17 @@ public class PaymentController {
 
     private final PaymentApplication paymentApplication;
 
-    // 카드결제
+    /**
+     * 결제 프로세스
+     */
     @PostMapping("/approve")
     public ResponseEntity<ApiResponse<PaymentRecordDto>> paymentProcessByPayment(@RequestBody PaymentDto requestDto) {
         return HttpBuilder.createResponse(paymentApplication.validateTokenAndProcessPayment(requestDto));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<PaymentRecordDto>> findPaymentRecordByTransactionId(@RequestBody String transactionId) {
+        return HttpBuilder.createResponse(paymentApplication.findPaymentRecordByTransactionId(transactionId));
     }
 
 }

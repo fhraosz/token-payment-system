@@ -3,10 +3,12 @@ package com.bulewalnut.tokenpaymentsystem.application;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.entity.CardEntity;
 import com.bulewalnut.tokenpaymentsystem.entity.TokenEntity;
+import com.bulewalnut.tokenpaymentsystem.exception.RestClientException;
 import com.bulewalnut.tokenpaymentsystem.exception.ValidateException;
 import com.bulewalnut.tokenpaymentsystem.service.TokenService;
 import com.bulewalnut.tokenpaymentsystem.util.RandomKeyUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenApplication {
 
     private final TokenService tokenService;
 
     public String createRefIdAndRegisterCard(CardDto cardDto) {
+        try {
             String refId = RandomKeyUtil.createRefId();
             tokenService.registerCard(cardDto, refId);
             return refId;
+        } catch (RestClientException e) {
+            log.error("카드 등록에 실패하였습니다. ", e);
+            throw new RestClientException("카드 등록에 실패하였습니다.");
+        }
     }
 
     public List<CardDto> findCardByUserCi(String userCi) {
@@ -35,8 +43,7 @@ public class TokenApplication {
 
         List<CardDto> cardDtos = new ArrayList<>();
 
-        cardEntities.forEach
-                (cardEntity -> cardDtos.add(CardDto.of(cardEntity.getRefId(), cardEntity.getCardNickName())));
+        cardEntities.forEach(cardEntity -> cardDtos.add(CardDto.setCardDto(cardEntity.getRefId(), cardEntity.getCardNickName())));
 
         return cardDtos;
     }

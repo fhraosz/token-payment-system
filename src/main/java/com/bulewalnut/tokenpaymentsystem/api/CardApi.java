@@ -35,25 +35,27 @@ public class CardApi {
     private String paymentServiceUrl;
 
     public String encryptAndRegisterCard(CardDto cardDto) {
-            CardDto encryptCardDto = encryptCardDto(cardDto);
-            return restClient.postResponse(tokenizationServiceUrl + REGISTER, encryptCardDto);
-    }
-
-    public List<CardDto> findCardByUserCi(String userCi) {
-            String url = String.format("%s?userCi=%s", tokenizationServiceUrl + SEARCH, userCi);
-            return restClient.getListResponse(url, CardDto.class);
+        CardDto encryptCardDto = encryptCardDto(cardDto);
+        String url = String.format("%s%s", tokenizationServiceUrl, REGISTER);
+        return restClient.postRequest(url, encryptCardDto);
     }
 
     public String getTokenByRefId(String refId) {
-            String url = String.format("%s?refId=%s", tokenizationServiceUrl + TOKEN, refId);
-            return restClient.getResponse(url);
+        String url = String.format("%s%s?refId=%s", tokenizationServiceUrl, TOKEN, refId);
+        return restClient.getRequest(url);
+    }
+
+    public List<CardDto> findCardByUserCi(String userCi) {
+        String url = String.format("%s%s?userCi=%s", tokenizationServiceUrl, SEARCH, userCi);
+        return restClient.getListRequest(url, CardDto.class);
     }
 
     public PaymentRecordDto paymentProcessByToken(PaymentDto requestDto) {
         ParameterizedTypeReference<ApiResponse<PaymentRecordDto>> responseType =
                 new ParameterizedTypeReference<>() {};
+        String url = String.format("%s%s", paymentServiceUrl, APPROVE);
 
-        return restClient.postResponse(paymentServiceUrl + APPROVE, requestDto, responseType);
+        return restClient.postRequest(url, requestDto, responseType);
     }
 
     private CardDto encryptCardDto(CardDto cardDto) {
@@ -62,10 +64,18 @@ public class CardApi {
             String encryptedCardExpiry = encryptionUtil.encrypt(cardDto.getCardExpiry());
             String encryptedCardCvc = encryptionUtil.encrypt(cardDto.getCardCvc());
 
-            return CardDto.of(encryptedCardNumber, encryptedCardExpiry, encryptedCardCvc, cardDto.getCardNickName());
+            return CardDto.setCardDto(encryptedCardNumber, encryptedCardExpiry, encryptedCardCvc, cardDto.getCardNickName());
         } catch (Exception e) {
-            log.error("Encryption failed.", e);
-            throw new EncryptionException("Encryption failed", e);
+            log.error("암호화에 실패하였습니다. {}", e.getMessage(), e);
+            throw new EncryptionException("암호화에 실패하였습니다.", e);
         }
+    }
+
+    public PaymentRecordDto findPaymentRecordByTransactionId(String transactionId) {
+        ParameterizedTypeReference<ApiResponse<PaymentRecordDto>> responseType =
+                new ParameterizedTypeReference<>() {};
+        String url = String.format("%s%s", paymentServiceUrl, SEARCH);
+
+        return restClient.postRequest(url, transactionId, responseType);
     }
 }

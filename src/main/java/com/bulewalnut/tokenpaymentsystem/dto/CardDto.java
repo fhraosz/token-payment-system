@@ -3,41 +3,30 @@ package com.bulewalnut.tokenpaymentsystem.dto;
 import lombok.*;
 
 @Getter
-@Builder
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardDto {
 
-    private String cardNumber;
-    private String cardExpiry;
-    private String cardCvc;
-    private String refId;
-    private String cardNickName;
+    private String cardNumber; // 카드번호
+    private String cardExpiry; // 카드유효일자
+    private String cardCvc; // cvc
+    private String refId; // 카드 redId
+    private String cardNickName; // 카드별명
 
-    public static CardDto of(String cardNumber, String cardExpiry, String cardCvc, String cardNickName) {
-        return CardDto.builder()
-                .cardNumber(cardNumber)
-                .cardExpiry(cardExpiry)
-                .cardCvc(cardCvc)
-                .cardNickName(cardNickName)
-                .build();
+    public static CardDto setCardDto(String cardNumber, String cardExpiry, String cardCvc, String cardNickName) {
+        CardDto cardDto = new CardDto();
+        cardDto.setCardNumber(cardNumber);
+        cardDto.setCardExpiry(cardExpiry);
+        cardDto.setCardCvc(cardCvc);
+        cardDto.setCardNickName(cardNickName);
+        return cardDto;
     }
 
-    public static CardDto of(String cardNumber, String cardExpiry, String cardCvc, String refId, String cardNickName) {
-        return CardDto.builder()
-                .cardNumber(cardNumber)
-                .cardExpiry(cardExpiry)
-                .cardCvc(cardCvc)
-                .refId(refId)
-                .cardNickName(cardNickName)
-                .build();
-    }
-
-    public static CardDto of(String refId, String cardNickName) {
-        return CardDto.builder()
-                .refId(refId)
-                .cardNickName(cardNickName)
-                .build();
+    public static CardDto setCardDto(String refId, String cardNickName) {
+        CardDto cardDto = new CardDto();
+        cardDto.setRefId(refId);
+        cardDto.setCardNickName(cardNickName);
+        return cardDto;
     }
 }
