@@ -1,5 +1,6 @@
 package com.bulewalnut.tokenpaymentsystem.util;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +25,8 @@ public class EncryptionUtil {
     private static final int KEY_SIZE = 16; // 키 사이즈 (바이트 단위)
     private static final String CHARSET_NAME = "UTF-8"; // 문자 인코딩
 
-    private final String iv; // 초기화 벡터 (IV)
-    private final Key keySpec; // 암호화에 사용할 비밀 키
+    private String iv; // 초기화 벡터 (IV)
+    private Key keySpec; // 암호화에 사용할 비밀 키
 
     @Value("${crypto.aes-secret-key}")
     private String secretKey;
@@ -36,7 +37,8 @@ public class EncryptionUtil {
      *
      * @throws UnsupportedEncodingException : UTF-8 인코딩을 지원하지 않는 경우 발생할 수 있음
      */
-    public EncryptionUtil() throws UnsupportedEncodingException {
+    @PostConstruct
+    public void init() throws UnsupportedEncodingException {
         this.iv = secretKey.substring(0, KEY_SIZE);
         byte[] keyBytes = new byte[KEY_SIZE];
         byte[] b = secretKey.getBytes(CHARSET_NAME);
