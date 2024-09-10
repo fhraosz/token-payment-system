@@ -3,6 +3,7 @@ package com.bulewalnut.tokenpaymentsystem.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 public class RandomKeyUtil {
 
@@ -23,5 +24,10 @@ public class RandomKeyUtil {
         String datePart = new SimpleDateFormat(TRANSACTION_ID_PATTERN).format(new Date());
         String uniqueNumber = String.format("%02d", new Random().nextInt(TRANSACTION_ID_BASE));
         return String.format("%s%s%s", TRANSCATION_PREFIX, datePart, uniqueNumber);
+    }
+
+    public static String createTokenByRefId(String refId) {
+        String randomKey = UUID.randomUUID().toString();
+        return randomKey + refId;
     }
 }

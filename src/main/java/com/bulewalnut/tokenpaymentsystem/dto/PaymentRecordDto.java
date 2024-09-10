@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PaymentRecordDto {
 
-    @JsonProperty("id")
-    private Long id;
+    @JsonProperty("paymentRecordId")
+    private Long paymentRecordId;
 
     @JsonProperty("transactionId")
-    private String transactionId;
+    private String transactionId; // 결제내역ID
 
     @JsonProperty("refId")
     private String refId; // 카드 참조값
@@ -37,7 +37,7 @@ public class PaymentRecordDto {
 
     public static PaymentRecordDto of(PaymentRecordEntity entity) {
         return PaymentRecordDto.builder()
-                .id(entity.getId())
+                .paymentRecordId(entity.getPaymentRecordId())
                 .transactionId(entity.getTransactionId())
                 .refId(entity.getRefId())
                 .amount(entity.getAmount())

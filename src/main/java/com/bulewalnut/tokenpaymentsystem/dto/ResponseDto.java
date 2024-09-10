@@ -8,15 +8,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ResponseDto<T> {
-    private boolean success;
-    private String message;
-    private T data;
+    private Boolean success; // 성공여부
+    private String message; // 메시지
+    private T data; // 데이터
 
-    public static <T> ResponseDto<T> setResponseDto(boolean success, String message, T data) {
+    public static <T> ResponseDto<T> setResponseDto(Boolean success, String message, T data) {
         ResponseDto<T> response = new ResponseDto<>();
+
         response.setSuccess(success);
         response.setMessage(message);
         response.setData(data);
+
         return response;
     }
 }

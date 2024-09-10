@@ -1,10 +1,11 @@
 package com.bulewalnut.tokenpaymentsystem.api;
 
-import com.bulewalnut.tokenpaymentsystem.dto.ApiResponse;
+import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import com.bulewalnut.tokenpaymentsystem.exception.EncryptionException;
+import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import com.bulewalnut.tokenpaymentsystem.util.EncryptionUtil;
 import com.bulewalnut.tokenpaymentsystem.util.RestClient;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class CardApi {
     }
 
     public PaymentRecordDto paymentProcessByToken(PaymentDto requestDto) {
-        ParameterizedTypeReference<ApiResponse<PaymentRecordDto>> responseType =
+        ParameterizedTypeReference<ResponseDto<PaymentRecordDto>> responseType =
                 new ParameterizedTypeReference<>() {};
         String url = String.format("%s%s", paymentServiceUrl, APPROVE);
 
@@ -66,13 +67,13 @@ public class CardApi {
 
             return CardDto.setCardDto(encryptedCardNumber, encryptedCardExpiry, encryptedCardCvc, cardDto.getCardNickName());
         } catch (Exception e) {
-            log.error("암호화에 실패하였습니다. {}", e.getMessage(), e);
-            throw new EncryptionException("암호화에 실패하였습니다.", e);
+            log.error(MessageTypeEnum.ENCRYPT_FAIL.getMessage(), e);
+            throw new EncryptionException(MessageTypeEnum.ENCRYPT_FAIL.getMessage(), e);
         }
     }
 
     public PaymentRecordDto findPaymentRecordByTransactionId(String transactionId) {
-        ParameterizedTypeReference<ApiResponse<PaymentRecordDto>> responseType =
+        ParameterizedTypeReference<ResponseDto<PaymentRecordDto>> responseType =
                 new ParameterizedTypeReference<>() {};
         String url = String.format("%s%s", paymentServiceUrl, SEARCH);
 

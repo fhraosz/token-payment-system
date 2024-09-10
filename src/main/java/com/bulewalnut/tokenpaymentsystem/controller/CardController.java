@@ -62,6 +62,9 @@ public class CardController {
         return ResponseUtil.createResponse(result);
     }
 
+    /**
+     * 결제성공 페이지 이동
+     */
     @GetMapping("/payment/complete/{transactionId}")
     public String showPaymentComplete(@PathVariable String transactionId, Model model) {
         PaymentRecordDto paymentRecordDto = cardApplication.findPaymentRecordByTransactionId(transactionId);

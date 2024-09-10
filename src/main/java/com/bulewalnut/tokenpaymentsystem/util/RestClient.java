@@ -1,6 +1,6 @@
 package com.bulewalnut.tokenpaymentsystem.util;
 
-import com.bulewalnut.tokenpaymentsystem.dto.ApiResponse;
+import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
 import com.bulewalnut.tokenpaymentsystem.exception.RestClientException;
 import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,12 @@ public class RestClient {
     public <T> T postRequest(String url, Object requestBody) {
         try {
 
-            ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
+            ResponseEntity<ResponseDto<T>> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     new HttpEntity<>(requestBody),
-                    new ParameterizedTypeReference<>() {}
+                    new ParameterizedTypeReference<>() {
+                    }
             );
             return Objects.requireNonNull(response.getBody()).getData();
         } catch (RestClientException e) {
@@ -41,9 +42,9 @@ public class RestClient {
         }
     }
 
-    public <T> T postRequest(String url, Object requestBody, ParameterizedTypeReference<ApiResponse<T>> responseType) {
+    public <T> T postRequest(String url, Object requestBody, ParameterizedTypeReference<ResponseDto<T>> responseType) {
         try {
-            ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
+            ResponseEntity<ResponseDto<T>> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     new HttpEntity<>(requestBody),
@@ -61,11 +62,12 @@ public class RestClient {
 
     public <T> T getRequest(String url) {
         try {
-            ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
+            ResponseEntity<ResponseDto<T>> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<>() {}
+                    new ParameterizedTypeReference<>() {
+                    }
             );
             return Objects.requireNonNull(response.getBody()).getData();
         } catch (RestClientException e) {
@@ -79,11 +81,12 @@ public class RestClient {
 
     public <T> List<T> getListRequest(String url, Class<T> dtoClass) {
         try {
-            ResponseEntity<ApiResponse<List<T>>> response = restTemplate.exchange(
+            ResponseEntity<ResponseDto<List<T>>> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<>() {}
+                    new ParameterizedTypeReference<>() {
+                    }
             );
             return Objects.requireNonNull(response.getBody()).getData();
         } catch (RestClientException e) {

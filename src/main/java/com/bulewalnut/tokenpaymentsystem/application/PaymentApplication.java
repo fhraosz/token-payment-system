@@ -19,9 +19,10 @@ public class PaymentApplication {
     public PaymentRecordDto validateTokenAndProcessPayment(PaymentDto requestDto) {
         TokenRequestDto tokenRequestDto = TokenRequestDto.setTokenRequestDto(requestDto.getToken());
 
-       if (BooleanUtils.isNotTrue(paymentApi.validateToken(tokenRequestDto)))  {  // 토큰 유효성 검사
-           return new PaymentRecordDto();
-       }
+        // 토큰 유효성 검사
+        if (BooleanUtils.isNotTrue(paymentApi.validateToken(tokenRequestDto))) {
+            return new PaymentRecordDto();
+        }
         return paymentService.processPayment(requestDto);
     }
 
