@@ -24,8 +24,8 @@ public class EncryptionUtil {
     private static final int KEY_SIZE = 16; // 키 사이즈 (바이트 단위)
     private static final String CHARSET_NAME = "UTF-8"; // 문자 인코딩
 
-    private String iv; // 초기화 벡터 (IV)
-    private Key keySpec; // 암호화에 사용할 비밀 키
+    private final String iv; // 초기화 벡터 (IV)
+    private final Key keySpec; // 암호화에 사용할 비밀 키
 
     @Value("${crypto.aes-secret-key}")
     private String secretKey;
@@ -47,8 +47,7 @@ public class EncryptionUtil {
         }
 
         System.arraycopy(b, 0, keyBytes, 0, len);
-        SecretKeySpec keySpec = new SecretKeySpec(keyBytes, TRANSFORMATION);
-        this.keySpec = keySpec;
+        this.keySpec = new SecretKeySpec(keyBytes, TRANSFORMATION);
     }
 
     /**
@@ -65,8 +64,7 @@ public class EncryptionUtil {
         Cipher c = Cipher.getInstance(ALGORITHM);
         c.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(iv.getBytes()));
         byte[] encrypted = c.doFinal(str.getBytes(CHARSET_NAME));
-        String enStr = new String(Base64.encodeBase64(encrypted));
-        return enStr;
+        return new String(Base64.encodeBase64(encrypted));
     }
 
     /**
