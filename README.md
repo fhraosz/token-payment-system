@@ -39,18 +39,3 @@
 
 ## 데이터베이스
 이 프로젝트는 H2 데이터베이스를 사용하며, 데이터베이스 설정은 `src/main/resources/application.properties`에서 확인할 수 있습니다.
-
-## 기여 방법
-1. 포크한 후 브랜치를 생성합니다:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-2. 변경 사항을 커밋합니다:
-   ```bash
-   git commit -am 'Add new feature'
-   ```
-3. 브랜치를 푸시합니다:
-   ```bash
-   git push origin feature/your-feature
-   ```
-4. 풀 리퀘스트를 생성합니다.
