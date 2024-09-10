@@ -9,7 +9,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "card")
+@Table(name = "card", indexes = {
+        @Index(name = "idx_card_1", columnList = "ref_id"),
+        @Index(name = "idx_card_2", columnList = "card_nick_name, user_ci")
+})
 @Getter
 @Builder
 @NoArgsConstructor
@@ -17,36 +20,37 @@ import java.time.LocalDateTime;
 public class CardEntity {
 
     @Id
+    @Column(name = "card_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long cardId;
 
-    @Column(nullable = false)
+    @Column(name = "card_number", nullable = false)
     private String cardNumber;
 
-    @Column(nullable = false)
+    @Column(name = "card_expiry", nullable = false)
     private String cardExpiry;
 
-    @Column(nullable = false)
+    @Column(name = "card_cvc", nullable = false)
     private String cardCvc;
 
-    @Column(nullable = false)
+    @Column(name = "ref_id", nullable = false, unique = true, length = 100)
     private String refId;
 
-    @Column(nullable = false)
+    @Column(name = "user_ci", nullable = false, length = 100)
     private String userCi;
 
-    @Column(nullable = false)
+    @Column(name = "card_nick_name", nullable = false, length = 20)
     private String cardNickName;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime lastModifiedDate;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
-    public static CardEntity of(CardDto cardDto, String refID, String userCi){
+    public static CardEntity buildCardEntity(CardDto cardDto, String refID, String userCi){
         return CardEntity.builder()
                 .cardNumber(cardDto.getCardNumber())
                 .cardExpiry(cardDto.getCardExpiry())
@@ -54,8 +58,8 @@ public class CardEntity {
                 .refId(refID)
                 .userCi(userCi)
                 .cardNickName(cardDto.getCardNickName())
-                .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .createdAt(cardDto.getCreatedAt())
+                .updatedAt(cardDto.getUpdatedAt())
                 .build();
     }
 }

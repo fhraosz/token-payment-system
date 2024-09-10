@@ -21,10 +21,12 @@ public class PaymentApi {
     private String tokenizationServiceUrl;
 
     public Boolean validateToken(TokenRequestDto requestDto) {
-        return restClient.postResponse(tokenizationServiceUrl + VALIDATE, requestDto);
+        String url = String.format("%s%s", tokenizationServiceUrl, VALIDATE);
+        return restClient.postRequest(url, requestDto);
     }
 
     public Boolean changeStateToken(TokenRequestDto requestDto) {
-        return restClient.postResponse(tokenizationServiceUrl + CHANGE_STATE, requestDto);
+        String url = String.format("%s%s", tokenizationServiceUrl, CHANGE_STATE);
+        return restClient.postRequest(url, requestDto);
     }
 }

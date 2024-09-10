@@ -15,7 +15,7 @@ import java.security.Key;
 import org.apache.commons.codec.binary.Base64;
 
 /**
- * AES 암호화 및 복호화를 수행하는 유틸리티 클래스입니다.
+ * AES 암호화 및 복호화를 수행하는 유틸리티 클래스.
  */
 @Component
 public class EncryptionUtil {
@@ -34,8 +34,6 @@ public class EncryptionUtil {
     /**
      * 주어진 암호화 비밀 키를 사용하여 객체를 생성.
      * 비밀 키는 16자리로 자르고, 이를 바탕으로 암호화 키를 생성.
-     *
-     * @throws UnsupportedEncodingException : UTF-8 인코딩을 지원하지 않는 경우 발생할 수 있음
      */
     @PostConstruct
     public void init() throws UnsupportedEncodingException {
@@ -54,12 +52,6 @@ public class EncryptionUtil {
 
     /**
      * 주어진 문자열을 암호화합니다.
-     *
-     * @param str : 암호화할 문자열
-     * @return 암호화된 문자열 (Base64 인코딩된 결과)
-     * @throws NoSuchAlgorithmException     : 암호화 알고리즘이 지원되지 않는 경우 발생
-     * @throws GeneralSecurityException     : 암호화 초기화에 실패한 경우 발생
-     * @throws UnsupportedEncodingException : UTF-8 인코딩을 지원하지 않는 경우 발생
      */
     public String encrypt(String str)
             throws NoSuchAlgorithmException, GeneralSecurityException, UnsupportedEncodingException {
@@ -71,12 +63,6 @@ public class EncryptionUtil {
 
     /**
      * 주어진 암호화된 문자열을 복호화합니다.
-     *
-     * @param str : 복호화할 문자열 (Base64 인코딩된 문자열)
-     * @return 복호화된 문자열
-     * @throws NoSuchAlgorithmException     : 암호화 알고리즘이 지원되지 않는 경우 발생
-     * @throws GeneralSecurityException     : 복호화 초기화에 실패한 경우 발생
-     * @throws UnsupportedEncodingException : UTF-8 인코딩을 지원하지 않는 경우 발생
      */
     public String decrypt(String str)
             throws NoSuchAlgorithmException, GeneralSecurityException, UnsupportedEncodingException {

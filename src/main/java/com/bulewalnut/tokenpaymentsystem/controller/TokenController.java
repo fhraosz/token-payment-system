@@ -1,7 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.controller;
 
 import com.bulewalnut.tokenpaymentsystem.application.TokenApplication;
-import com.bulewalnut.tokenpaymentsystem.dto.ApiResponse;
+import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
 import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
 import com.bulewalnut.tokenpaymentsystem.dto.TokenRequestDto;
 import com.bulewalnut.tokenpaymentsystem.util.HttpBuilder;
@@ -18,33 +18,43 @@ public class TokenController {
 
     private final TokenApplication tokenApplication;
 
-    // 카드등록
+    /**
+     * 카드 등록
+     */
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> registerCardByCardDto(@RequestBody CardDto cardDto) {
+    public ResponseEntity<ResponseDto<String>> registerCardByCardDto(@RequestBody CardDto cardDto) {
         return HttpBuilder.createResponse(tokenApplication.createRefIdAndRegisterCard(cardDto));
     }
 
-    // 고객이 등록한 카드 가져오기
+    /**
+     * 고객별 카드 목록 조회
+     */
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<CardDto>>>findCardByUserCi(@RequestParam("userCi") String userCi) {
+    public ResponseEntity<ResponseDto<List<CardDto>>>findCardByUserCi(@RequestParam("userCi") String userCi) {
         return HttpBuilder.createResponse(tokenApplication.findCardByUserCi(userCi));
     }
 
-    // 1회용 토큰 발급
+    /**
+     * 결제를 위한 1회용 토큰 발급
+     */
     @GetMapping("/token")
-    public ResponseEntity<ApiResponse<String>> getTokenByRefId(@RequestParam("refId") String refId) {
+    public ResponseEntity<ResponseDto<String>> getTokenByRefId(@RequestParam("refId") String refId) {
         return HttpBuilder.createResponse(tokenApplication.getTokenByRefId(refId));
     }
 
-    // 토큰 유효성 검사
+    /**
+     * 토큰 유효성 검사
+     */
     @PostMapping("/validate")
-    public ResponseEntity<ApiResponse<Boolean>> validateToken(@RequestBody TokenRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<Boolean>> validateToken(@RequestBody TokenRequestDto requestDto) {
         return HttpBuilder.createResponse(tokenApplication.findTokenEntityAndValidateToken(requestDto.getToken()));
     }
 
-    // 토큰 상태변경
+    /**
+     * 토큰 상태 변경
+     */
     @PostMapping("/change/state")
-    public ResponseEntity<ApiResponse<Boolean>> changeTokenState(@RequestBody TokenRequestDto requestDto) {
+    public ResponseEntity<ResponseDto<Boolean>> changeTokenState(@RequestBody TokenRequestDto requestDto) {
         return HttpBuilder.createResponse(tokenApplication.changeTokenState(requestDto.getToken()));
     }
 

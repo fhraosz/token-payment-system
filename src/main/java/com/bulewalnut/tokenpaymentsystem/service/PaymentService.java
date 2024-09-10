@@ -5,12 +5,16 @@ import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import com.bulewalnut.tokenpaymentsystem.dto.TokenRequestDto;
 import com.bulewalnut.tokenpaymentsystem.entity.PaymentRecordEntity;
+import com.bulewalnut.tokenpaymentsystem.exception.PaymentException;
 import com.bulewalnut.tokenpaymentsystem.repository.PaymentRecordRepository;
+import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import com.bulewalnut.tokenpaymentsystem.type.PaymentStateEnum;
 import com.bulewalnut.tokenpaymentsystem.util.RandomKeyUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,30 +24,48 @@ public class PaymentService {
     private final PaymentRecordRepository paymentRecordRepository;
     private final PaymentApi paymentApi;
 
+    @Transactional
     public PaymentRecordDto processPayment(PaymentDto requestDto) {
-
-        boolean isSuccess = true;
         String transactionId = RandomKeyUtil.createTransactionId();
         PaymentRecordEntity paymentRecordEntity;
 
-        if (isSuccess) {
-            paymentRecordEntity = paymentRecordRepository.save(PaymentRecordEntity.of(requestDto, transactionId, PaymentStateEnum.APPROVED.getState()));
-        } else {
-            paymentRecordEntity = paymentRecordRepository.save(PaymentRecordEntity.of(requestDto, transactionId, PaymentStateEnum.FAILED.getState()));
-        }
-
-        // 토큰상태변경
         try {
-            Boolean isChangeToken = paymentApi.changeStateToken(TokenRequestDto.of(requestDto.getToken()));
-            if (isChangeToken) {
-                log.info("토큰상태변경 완료");
-            } else {
-                log.info("토큰상태변경 실패");
-            }
-        } catch (Exception e) {
-            log.info("토큰상태변경 실패", e);
-        }
+            boolean isSuccess = true;
 
-        return PaymentRecordDto.of(paymentRecordEntity);
+            if (isSuccess) {
+                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.APPROVED.getState());
+            } else {
+                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.FAILED.getState());
+            }
+
+            Boolean isChangeToken = paymentApi.changeStateToken(TokenRequestDto.setTokenRequestDto(requestDto.getToken()));
+
+            if (BooleanUtils.isNotTrue(isChangeToken)) {
+                log.error(MessageTypeEnum.CHANGE_TOKEN_STATE_FAIL.getMessage());
+            } else {
+                log.info(MessageTypeEnum.CHANGE_TOKEN_STATE_SUCCESS.getMessage());
+            }
+
+            return PaymentRecordDto.of(paymentRecordEntity);
+
+        } catch (PaymentException e) {
+            log.error(MessageTypeEnum.PAYMENT_PROCESS_FAIL.getMessage(), e);
+            throw new PaymentException(MessageTypeEnum.PAYMENT_PROCESS_FAIL.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    protected PaymentRecordEntity savePaymentRecordEntity(PaymentDto requestDto, String transactionId, String state) {
+        return paymentRecordRepository.save(PaymentRecordEntity.of(requestDto, transactionId, state));
+    }
+
+    @Transactional
+    public PaymentRecordDto findPaymentRecordByTransactionId(String transactionId) {
+        PaymentRecordEntity entity = paymentRecordRepository.findByTransactionId(transactionId);
+
+        if (entity == null) {
+           return new PaymentRecordDto();
+        }
+        return PaymentRecordDto.of(entity);
     }
 }

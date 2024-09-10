@@ -5,11 +5,11 @@
     <title>결제 화면</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f0f0;
             color: #333;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -18,18 +18,19 @@
         }
 
         h1 {
-            color: #4CAF50;
+            color: #27ae60;
+            font-size: 36px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         form {
-            background: #fff;
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
             width: 100%;
-            margin: 20px;
         }
 
         form div {
@@ -43,7 +44,7 @@
         }
 
         select, input[type="number"] {
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -52,41 +53,68 @@
 
         button {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #218c53;
         }
 
         .button {
             display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             text-decoration: none;
             font-size: 16px;
-            text-align: center;
+            margin-top: 20px;
         }
 
         .button:hover {
-            background-color: #45a049;
+            background-color: #218c53;
         }
     </style>
+    <script>
+        async function handlePaymentSubmission(event) {
+            event.preventDefault();
+            const paymentData = {
+                refId: document.getElementById('refId').value,
+                amount: document.getElementById('amount').value
+            };
+
+            try {
+                const response = await fetch('/cards/payment/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('결제에 성공했습니다!');
+                    window.location.href = '/cards/payment/complete/' + result.data.transactionId;
+                } else {
+                    alert('결제 실패: ' + result.message);
+                }
+            } catch (error) {
+                alert('결제 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>카드 목록</h1>
-
-<form action="#" th:action="@{/cards/payment/process}" method="post">
+<form id="paymentForm" onsubmit="handlePaymentSubmission(event)">
     <div>
         <label for="refId">카드 선택:</label>
         <select id="refId" name="refId" required>
@@ -104,9 +132,6 @@
         <button type="submit">결제 진행</button>
     </div>
 </form>
-
-<div>
-    <a href="#" th:href="@{/cards/register}" class="button">카드 등록 페이지로 이동</a>
-</div>
+<a href="#" th:href="@{/cards/register}" class="button">카드 등록 페이지로 이동</a>
 </body>
 </html>

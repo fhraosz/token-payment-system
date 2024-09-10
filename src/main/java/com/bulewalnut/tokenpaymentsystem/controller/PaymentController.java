@@ -1,7 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.controller;
 
 import com.bulewalnut.tokenpaymentsystem.application.PaymentApplication;
-import com.bulewalnut.tokenpaymentsystem.dto.ApiResponse;
+import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
 import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
 import com.bulewalnut.tokenpaymentsystem.util.HttpBuilder;
@@ -16,10 +16,20 @@ public class PaymentController {
 
     private final PaymentApplication paymentApplication;
 
-    // 카드결제
+    /**
+     * 결제 프로세스
+     */
     @PostMapping("/approve")
-    public ResponseEntity<ApiResponse<PaymentRecordDto>> paymentProcessByPayment(@RequestBody PaymentDto requestDto) {
+    public ResponseEntity<ResponseDto<PaymentRecordDto>> paymentProcessByPayment(@RequestBody PaymentDto requestDto) {
         return HttpBuilder.createResponse(paymentApplication.validateTokenAndProcessPayment(requestDto));
+    }
+
+    /**
+     * 결제 내역 가져오기
+     */
+    @PostMapping("/search")
+    public ResponseEntity<ResponseDto<PaymentRecordDto>> findPaymentRecordByTransactionId(@RequestBody String transactionId) {
+        return HttpBuilder.createResponse(paymentApplication.findPaymentRecordByTransactionId(transactionId));
     }
 
 }
