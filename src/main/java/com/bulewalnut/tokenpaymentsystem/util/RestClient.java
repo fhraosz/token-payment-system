@@ -6,9 +6,6 @@ import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -92,7 +89,8 @@ public class RestClient {
                 url,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<ResponseDto<List<T>>>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
         return Objects.requireNonNull(response.getBody()).getData();
     }

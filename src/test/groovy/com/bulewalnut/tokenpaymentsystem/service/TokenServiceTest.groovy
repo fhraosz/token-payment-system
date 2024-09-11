@@ -23,7 +23,6 @@ class TokenServiceTest extends Specification {
         given:
         CardDto cardDto = new CardDto(cardNumber: "1234", cardExpiry: "12/25", cardCvc: "123", cardNickName: "MyCard")
         String refId = "ref123"
-        String userCi = "userCi123"
 
         when:
         tokenService.registerCard(cardDto, refId)

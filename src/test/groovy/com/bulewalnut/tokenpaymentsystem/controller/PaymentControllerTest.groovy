@@ -19,7 +19,6 @@ class PaymentControllerTest extends Specification {
         given:
         PaymentDto paymentDto = new PaymentDto(amount: 1000, token: "token123")
         PaymentRecordDto paymentRecordDto = new PaymentRecordDto(transactionId: "tx123", amount: 1000)
-        ResponseDto<PaymentRecordDto> responseDto = ResponseDto.setResponseDto(true, "결제 성공", paymentRecordDto)
 
         when:
         ResponseEntity<ResponseDto<PaymentRecordDto>> response = paymentController.paymentProcessByPayment(paymentDto)
@@ -35,7 +34,6 @@ class PaymentControllerTest extends Specification {
         given:
         String transactionId = "tx123"
         PaymentRecordDto paymentRecordDto = new PaymentRecordDto(transactionId: transactionId, amount: 1000)
-        ResponseDto<PaymentRecordDto> responseDto = ResponseDto.setResponseDto(true, "결제 내역 조회 성공", paymentRecordDto)
 
         when:
         ResponseEntity<ResponseDto<PaymentRecordDto>> response = paymentController.findPaymentRecordByTransactionId(transactionId)

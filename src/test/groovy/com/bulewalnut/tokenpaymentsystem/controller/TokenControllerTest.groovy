@@ -46,7 +46,6 @@ class TokenControllerTest extends Specification {
     def "1회용 토큰 발급 테스트"() {
         given:
         String refId = "ref123"
-        ResponseDto<String> responseDto = ResponseDto.setResponseDto(true, "토큰 발급 성공", "token123")
 
         when:
         ResponseEntity<ResponseDto<String>> response = tokenController.getTokenByRefId(refId)
