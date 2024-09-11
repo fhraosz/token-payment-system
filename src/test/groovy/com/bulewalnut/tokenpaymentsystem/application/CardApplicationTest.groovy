@@ -10,7 +10,7 @@ import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum
 import spock.lang.Specification
 import spock.lang.Subject
 
-class CardApplicationSpec extends Specification {
+class CardApplicationTest extends Specification {
 
     CardApi cardApi = Mock()
 

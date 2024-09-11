@@ -38,7 +38,10 @@ public class PaymentRecordEntity {
     private BigDecimal amount; // 결제 금액
 
     @Column(name = "status", nullable = false, length = 20)
-    private String status; // 결제 상태 (예: APPROVED, FAILED)
+    private String status; // 결제 상태 (예: 결제완료, 결제실패)
+
+    @Column(name = "payment_complete_date", length = 10)
+    private String paymentCompleteDate; // 결제 완료일 yyyy-mm-dd
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -48,14 +51,13 @@ public class PaymentRecordEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public static PaymentRecordEntity of(PaymentDto paymentDto, String transactionId, String status) {
-        LocalDateTime now = LocalDateTime.now();
-
+    public static PaymentRecordEntity bulidPaymentRecordEntity(PaymentDto paymentDto, String transactionId, String status, LocalDateTime now, String paymentCompleteDate) {
         return PaymentRecordEntity.builder()
                 .transactionId(transactionId)
                 .refId(paymentDto.getRefId())
                 .amount(paymentDto.getAmount())
                 .status(status)
+                .paymentCompleteDate(paymentCompleteDate)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

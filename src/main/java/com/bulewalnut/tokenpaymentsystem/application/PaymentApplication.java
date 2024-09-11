@@ -26,6 +26,7 @@ public class PaymentApplication {
         return paymentService.processPayment(requestDto);
     }
 
+
     public PaymentRecordDto findPaymentRecordByTransactionId(String transactionId) {
         return paymentService.findPaymentRecordByTransactionId(transactionId);
     }

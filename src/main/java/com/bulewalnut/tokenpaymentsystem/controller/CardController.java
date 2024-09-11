@@ -29,7 +29,7 @@ public class CardController {
      * 카드 등록 페이지
      */
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showCardRegister(Model model) {
         model.addAttribute(CARD_DTO, new CardDto());
         return REGISTER_CARD;
     }
@@ -47,7 +47,7 @@ public class CardController {
      * 카드 결제 페이지
      */
     @GetMapping("/payment")
-    public String getCardList(Model model) {
+    public String findCardByUserCi(Model model) {
         List<CardDto> cardList = cardApplication.findCardByUserCi();
         model.addAttribute(CARD_LIST, cardList);
         return PAYMENT_CARD;
@@ -57,7 +57,7 @@ public class CardController {
      * 카드 결제 처리를 수행하고 결제 결과 리턴
      */
     @PostMapping("/payment/process")
-    public ResponseEntity<ResponseDto<PaymentRecordDto>> processPayment(@RequestBody PaymentDto paymentDto) {
+    public ResponseEntity<ResponseDto<PaymentRecordDto>> paymentProcessByToken(@RequestBody PaymentDto paymentDto) {
         ResponseDto<PaymentRecordDto> result = cardApplication.paymentProcessByToken(paymentDto);
         return ResponseUtil.createResponse(result);
     }
@@ -70,5 +70,13 @@ public class CardController {
         PaymentRecordDto paymentRecordDto = cardApplication.findPaymentRecordByTransactionId(transactionId);
         model.addAttribute(PAYMENT_RECORD_DTO, paymentRecordDto);
         return PAYMENT_COMPLETE;
+    }
+
+    /**
+     * 결제실패 페이지 이동
+     */
+    @GetMapping("/payment/failed")
+    public String showPaymentFailed(Model model) {
+        return "payment-failed";
     }
 }

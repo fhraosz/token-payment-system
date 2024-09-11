@@ -1,10 +1,7 @@
 package com.bulewalnut.tokenpaymentsystem.application;
 
-import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
-import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
+import com.bulewalnut.tokenpaymentsystem.dto.*;
 import com.bulewalnut.tokenpaymentsystem.api.CardApi;
-import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
-import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
 import com.bulewalnut.tokenpaymentsystem.exception.EncryptionException;
 import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import lombok.RequiredArgsConstructor;

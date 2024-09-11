@@ -33,6 +33,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'commons-codec:commons-codec:1.16.0'
     implementation 'org.codehaus.groovy:groovy-all:3.0.17'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'io.github.benas:random-beans:3.9.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 

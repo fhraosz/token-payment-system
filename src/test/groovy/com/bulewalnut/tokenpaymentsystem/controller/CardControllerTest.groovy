@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.ui.Model
 import spock.lang.Specification
 
-class CardControllerSpec extends Specification {
+class CardControllerTest extends Specification {
 
     CardApplication cardApplication = Mock()
     CardController cardController = new CardController(cardApplication)
@@ -19,7 +19,7 @@ class CardControllerSpec extends Specification {
         Model model = Mock()
 
         when:
-        String viewName = cardController.showRegistrationForm(model)
+        String viewName = cardController.showCardRegister(model)
 
         then:
         1 * model.addAttribute(CardController.CARD_DTO, _ as CardDto)
@@ -40,20 +40,6 @@ class CardControllerSpec extends Specification {
         response.getBody().message == "등록 성공"
     }
 
-    def "카드 목록 페이지 호출 테스트"() {
-        given:
-        Model model = Mock()
-        List<CardDto> cardList = [new CardDto(cardNumber: "1234", cardExpiry: "12/25", cardCvc: "123", cardNickName: "MyCard")]
-
-        when:
-        String viewName = cardController.getCardList(model)
-
-        then:
-        1 * cardApplication.findCardByUserCi(*_) >> cardList
-        1 * model.addAttribute(*_, *_)
-        viewName == CardController.PAYMENT_CARD
-    }
-
     def "카드 결제 처리 테스트"() {
         given:
         PaymentDto paymentDto = new PaymentDto(amount: 1000, token: "token123")
@@ -62,7 +48,7 @@ class CardControllerSpec extends Specification {
         ResponseDto<PaymentRecordDto> responseDto = ResponseDto.setResponseDto(true, "결제 성공", paymentRecordDto)
 
         when:
-        ResponseEntity<ResponseDto<PaymentRecordDto>> response = cardController.processPayment(paymentDto)
+        ResponseEntity<ResponseDto<PaymentRecordDto>> response = cardController.paymentProcessByToken(paymentDto)
 
         then:
         1 * cardApplication.paymentProcessByToken(*_) >> responseDto

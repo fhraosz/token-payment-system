@@ -105,15 +105,17 @@
                     window.location.href = '/cards/payment/complete/' + result.data.transactionId;
                 } else {
                     alert('결제 실패: ' + result.message);
+                    window.location.href = '/cards/payment/failed';
                 }
             } catch (error) {
                 alert('결제 중 오류가 발생했습니다.');
+                window.location.href = '/cards/payment/failed';
             }
         }
     </script>
 </head>
 <body>
-<h1>카드 목록</h1>
+<h1>결제 페이지</h1>
 <form id="paymentForm" onsubmit="handlePaymentSubmission(event)">
     <div>
         <label for="refId">카드 선택:</label>

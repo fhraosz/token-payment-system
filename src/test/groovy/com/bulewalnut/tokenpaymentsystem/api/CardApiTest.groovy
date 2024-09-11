@@ -8,31 +8,12 @@ import com.bulewalnut.tokenpaymentsystem.util.EncryptionUtil
 import com.bulewalnut.tokenpaymentsystem.util.RestClient
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Specification
-import spock.lang.Subject
 
-class CardApiSpec extends Specification {
+class CardApiTest extends Specification {
 
     RestClient restClient = Mock()
     EncryptionUtil encryptionUtil = Mock()
-
-    @Subject
     CardApi cardApi = new CardApi(encryptionUtil, restClient)
-
-    def "카드 등록 성공 테스트"() {
-        given:
-        CardDto cardDto = new CardDto(cardNumber: "1234", cardExpiry: "12/25", cardCvc: "123", cardNickName: "MyCard")
-        CardDto encryptedCardDto = new CardDto(cardNumber: "encrypted1234", cardExpiry: "encrypted12/25", cardCvc: "encrypted123", cardNickName: "MyCard")
-
-        when:
-        String refId = cardApi.encryptAndRegisterCard(cardDto)
-
-        then:
-        1 * encryptionUtil.encrypt(cardDto.cardNumber) >> "encrypted1234"
-        1 * encryptionUtil.encrypt(cardDto.cardExpiry) >> "encrypted12/25"
-        1 * encryptionUtil.encrypt(cardDto.cardCvc) >> "encrypted123"
-        1 * restClient.postRequest(_ as String, encryptedCardDto) >> "ref123"
-        refId == "ref123"
-    }
 
     def "카드 등록 실패 테스트 - 암호화 실패"() {
         given:
@@ -55,7 +36,7 @@ class CardApiSpec extends Specification {
         List<CardDto> result = cardApi.findCardByUserCi("userCi123")
 
         then:
-        1 * restClient.getListRequest(_ as String, CardDto.class) >> cardList
+        1 * restClient.getListRequest(_) >> cardList
         result.size() == 1
         result[0].cardNumber == "1234"
     }

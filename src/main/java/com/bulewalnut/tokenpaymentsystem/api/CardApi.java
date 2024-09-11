@@ -1,9 +1,6 @@
 package com.bulewalnut.tokenpaymentsystem.api;
 
-import com.bulewalnut.tokenpaymentsystem.dto.ResponseDto;
-import com.bulewalnut.tokenpaymentsystem.dto.CardDto;
-import com.bulewalnut.tokenpaymentsystem.dto.PaymentDto;
-import com.bulewalnut.tokenpaymentsystem.dto.PaymentRecordDto;
+import com.bulewalnut.tokenpaymentsystem.dto.*;
 import com.bulewalnut.tokenpaymentsystem.exception.EncryptionException;
 import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import com.bulewalnut.tokenpaymentsystem.util.EncryptionUtil;
@@ -48,7 +45,7 @@ public class CardApi {
 
     public List<CardDto> findCardByUserCi(String userCi) {
         String url = String.format("%s%s?userCi=%s", tokenizationServiceUrl, SEARCH, userCi);
-        return restClient.getListRequest(url, CardDto.class);
+        return restClient.getListRequest(url);
     }
 
     public PaymentRecordDto paymentProcessByToken(PaymentDto requestDto) {

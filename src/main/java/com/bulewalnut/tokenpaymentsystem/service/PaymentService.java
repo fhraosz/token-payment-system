@@ -9,12 +9,15 @@ import com.bulewalnut.tokenpaymentsystem.exception.PaymentException;
 import com.bulewalnut.tokenpaymentsystem.repository.PaymentRecordRepository;
 import com.bulewalnut.tokenpaymentsystem.type.MessageTypeEnum;
 import com.bulewalnut.tokenpaymentsystem.type.PaymentStateEnum;
+import com.bulewalnut.tokenpaymentsystem.util.DateUtil;
 import com.bulewalnut.tokenpaymentsystem.util.RandomKeyUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +32,16 @@ public class PaymentService {
         String transactionId = RandomKeyUtil.createTransactionId();
         PaymentRecordEntity paymentRecordEntity;
 
+        LocalDateTime now = LocalDateTime.now();
+        String paymentCompleteDate = DateUtil.formatToDate(now);
+
         try {
             boolean isSuccess = true;
 
             if (isSuccess) {
-                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.APPROVED.getState());
+                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.APPROVED.getState(), now, paymentCompleteDate);
             } else {
-                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.FAILED.getState());
+                paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.FAILED.getState(), now, null);
             }
 
             Boolean isChangeToken = paymentApi.changeStateToken(TokenRequestDto.setTokenRequestDto(requestDto.getToken()));
@@ -55,8 +61,8 @@ public class PaymentService {
     }
 
     @Transactional
-    protected PaymentRecordEntity savePaymentRecordEntity(PaymentDto requestDto, String transactionId, String state) {
-        return paymentRecordRepository.save(PaymentRecordEntity.of(requestDto, transactionId, state));
+    protected PaymentRecordEntity savePaymentRecordEntity(PaymentDto requestDto, String transactionId, String state, LocalDateTime now, String paymentCompleteDate) {
+        return paymentRecordRepository.save(PaymentRecordEntity.bulidPaymentRecordEntity(requestDto, transactionId, state, now, paymentCompleteDate));
     }
 
     @Transactional
