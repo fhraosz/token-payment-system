@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>결제 완료</title>
+    <title>결제 실패</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -19,7 +19,7 @@
         }
 
         h1 {
-            color: #27ae60;
+            color: #e74c3c;
             font-size: 36px;
             margin-bottom: 10px;
             text-align: center;
@@ -44,7 +44,7 @@
         .button {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #27ae60;
+            background-color: #e74c3c;
             color: white;
             border: none;
             border-radius: 25px;
@@ -54,22 +54,21 @@
         }
 
         .button:hover {
-            background-color: #218c53;
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
 
-<h1>결제가 성공적으로 완료되었습니다!</h1>
+<h1>결제가 실패했습니다</h1>
 
 <div class="card">
-    <p>결제 ID: <span th:text="${paymentRecordDto.transactionId}"></span></p>
-    <p>결제 금액: <span th:text="${paymentRecordDto.amount.intValue()}"></span>원</p>
-    <p>결제 상태: <span th:text="${paymentRecordDto.status}"></span></p>
-    <p>결제 시간: <span th:text="${#temporals.format(paymentRecordDto.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p>죄송합니다. 결제가 실패했습니다.</p>
+    <p>결제 도중 오류가 발생했습니다.</p>
+    <p> 다시 시도해 주세요.</p>
 </div>
 
-<a href="#" th:href="@{/main}" class="button">메인 화면으로 이동</a>
+<a href="#" th:href="@{/cards/payment}" class="button">결제 다시 시도</a>
 
 </body>
 </html>

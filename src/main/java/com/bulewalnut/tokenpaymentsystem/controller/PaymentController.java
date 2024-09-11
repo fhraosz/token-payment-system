@@ -31,5 +31,4 @@ public class PaymentController {
     public ResponseEntity<ResponseDto<PaymentRecordDto>> findPaymentRecordByTransactionId(@RequestBody String transactionId) {
         return HttpBuilder.createResponse(paymentApplication.findPaymentRecordByTransactionId(transactionId));
     }
-
 }

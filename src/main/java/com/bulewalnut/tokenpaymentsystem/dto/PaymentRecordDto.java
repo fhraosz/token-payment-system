@@ -27,7 +27,7 @@ public class PaymentRecordDto {
     private BigDecimal amount; // 결제 금액
 
     @JsonProperty("status")
-    private String status; // 결제 상태 (예: APPROVED, FAILED)
+    private String status; // 결제 상태 (예: 결제완료, 결제실패)
 
     @JsonProperty("createdAt")
     private LocalDateTime createdAt;
