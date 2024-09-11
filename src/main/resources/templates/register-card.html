@@ -143,7 +143,7 @@
 
             const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
             if (!expiryRegex.test(cardExpiry)) {
-                alert('카드 만료일을 확인해주세요.');
+                alert('유효기간을 확인해주세요.');
                 return false;
             }
 
@@ -210,19 +210,19 @@
 <form id="cardForm" onsubmit="handleFormSubmission(event)">
     <div>
         <label for="cardNumber">카드번호:</label>
-        <input type="text" id="cardNumber" oninput="formatCardNumber(event)" placeholder="1111-1111-1111-1111"/>
+        <input type="text" id="cardNumber" oninput="formatCardNumber(event); this.setCustomValidity('')" placeholder="1111-1111-1111-1111" required oninvalid="this.setCustomValidity('카드번호를 입력해주세요')" />
     </div>
     <div>
         <label for="cardExpiry">유효기간 (MM/YY):</label>
-        <input type="text" id="cardExpiry" oninput="formatExpiryDate(event)" placeholder="01/23"/>
+        <input type="text" id="cardExpiry" oninput="formatExpiryDate(event); this.setCustomValidity('')" placeholder="01/23" required oninvalid="this.setCustomValidity('유효기간을 입력해주세요')" />
     </div>
     <div>
         <label for="cardCvc">CVC:</label>
-        <input type="text" id="cardCvc" oninput="formatCvc(event)" placeholder="789"/>
+        <input type="text" id="cardCvc" oninput="formatCvc(event); this.setCustomValidity('')" placeholder="789" required oninvalid="this.setCustomValidity('CVC번호를 입력해주세요')" />
     </div>
     <div>
         <label for="cardNickName">카드별명:</label>
-        <input type="text" id="cardNickName" oninput="formatCardNickName(event)" placeholder="nickName"/>
+        <input type="text" id="cardNickName" oninput="formatCardNickName(event); this.setCustomValidity('')" placeholder="nickName" required oninvalid="this.setCustomValidity('카드 별명을 입력해주세요')" />
     </div>
     <div>
         <button type="submit">카드 등록</button>
