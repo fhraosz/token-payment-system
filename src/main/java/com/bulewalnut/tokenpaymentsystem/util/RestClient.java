@@ -30,10 +30,10 @@ public class RestClient {
             return restTemplate.exchange(url, method, request, responseType);
         } catch (RestClientException e) {
             log.error(MessageTypeEnum.RESPONSE_ENTITY_EXCEPTION.getMessage(), e);
-            throw new RestClientException("RestClientException: " + e.getMessage());
+            throw new RestClientException(MessageTypeEnum.RESPONSE_ENTITY_EXCEPTION.getMessage() + e.getMessage());
         } catch (Exception e) {
             log.error(MessageTypeEnum.RESPONSE_ENTITY_REST_CLIENT_EXCEPTION.getMessage(), e);
-            throw new RestClientException("Exception: " + e.getMessage());
+            throw new RestClientException(MessageTypeEnum.RESPONSE_ENTITY_REST_CLIENT_EXCEPTION.getMessage() + e.getMessage());
         }
     }
 
@@ -58,17 +58,6 @@ public class RestClient {
                 responseType
         );
         return Objects.requireNonNull(response.getBody()).getData();
-    }
-
-    // POST 요청 (ResponseDto 반환)
-    public <T> ResponseDto<T> postRequestWithDto(String url, Object requestBody, ParameterizedTypeReference<T> responseType) {
-        ResponseEntity<T> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                new HttpEntity<>(requestBody),
-                responseType
-        );
-        return ResponseDto.setResponseDto(true, "Success", response.getBody());
     }
 
     // GET 요청
