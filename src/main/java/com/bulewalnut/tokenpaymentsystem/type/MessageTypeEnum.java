@@ -18,6 +18,7 @@ public enum MessageTypeEnum {
     MAKE_TOKEN_FAIL("토큰 생성에 실패하였습니다."),
     CHANGE_TOKEN_STATE_FAIL("토큰 상태 변경에 실패하였습니다."),
     CHANGE_TOKEN_STATE_SUCCESS("토큰 상태 변경에 성공하였습니다."),
+    VALIDATE_TOKEN_SUCCESS("토큰 유효성 검사를 통과하였습니다."),
     VALIDATE_TOKEN_EXIST("토큰이 존재하지 않습니다."),
     VALIDATE_TOKEN_EXPIRES_AT("토큰의 유효기간이 만료되었습니다."),
     VALIDATE_TOKEN_IS_USE("이미 사용이 완료된 토큰입니다."),
