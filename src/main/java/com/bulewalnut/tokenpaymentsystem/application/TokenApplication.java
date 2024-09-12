@@ -29,6 +29,7 @@ public class TokenApplication {
         try {
             String refId = RandomKeyUtil.createRefId();
             tokenService.registerCard(cardDto, RandomKeyUtil.createRefId());
+            log.info("{} refId: {}", MessageTypeEnum.CARD_REGISTER_SUCCESS.getMessage(), refId);
             return refId;
         } catch (RestClientException e) {
             log.error(MessageTypeEnum.CARD_REGISTER_FAIL.getMessage(), e);

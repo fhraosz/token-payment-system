@@ -40,15 +40,19 @@ public class PaymentService {
 
             if (isSuccess) {
                 paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.APPROVED.getState(), now, paymentCompleteDate);
+                log.info("{} transactionId: {}", MessageTypeEnum.CARD_REGISTER_SUCCESS.getMessage(), transactionId);
             } else {
                 paymentRecordEntity = savePaymentRecordEntity(requestDto, transactionId, PaymentStateEnum.FAILED.getState(), now, null);
+                log.info("{} transactionId: {}", MessageTypeEnum.PAYMENT_PROCESS_FAIL.getMessage(), transactionId);
             }
 
             Boolean isChangeToken = paymentApi.changeStateToken(TokenRequestDto.setTokenRequestDto(requestDto.getToken()));
 
             if (BooleanUtils.isNotTrue(isChangeToken)) {
+                log.info("{} token: {}", MessageTypeEnum.CHANGE_TOKEN_STATE_FAIL.getMessage(), requestDto.getToken());
                 log.error(MessageTypeEnum.CHANGE_TOKEN_STATE_FAIL.getMessage());
             } else {
+                log.info("{} token: {}", MessageTypeEnum.CHANGE_TOKEN_STATE_SUCCESS.getMessage(), requestDto.getToken());
                 log.info(MessageTypeEnum.CHANGE_TOKEN_STATE_SUCCESS.getMessage());
             }
 

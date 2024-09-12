@@ -12,8 +12,8 @@ public class ResponseUtil {
     public static <T> ResponseEntity<ResponseDto<T>> createResponse(ResponseDto<T> result) {
         if (result == null || BooleanUtils.isNotTrue(result.getSuccess())) {
             return ResponseEntity.badRequest().body(result);
-        } else {
-            return ResponseEntity.ok(result);
         }
+
+        return ResponseEntity.ok(result);
     }
 }
